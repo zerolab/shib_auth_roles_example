@@ -1,0 +1,40 @@
+<?php
+
+/**
+ * @file
+ * Provides an example for advanced shib_auth roles assignment
+ */
+
+/**
+ * Implements hook_custom_theme().
+ */
+function shib_auth_roles_example_custom_theme() {
+  if (shib_auth_session_valid() && !user_is_anonymous()
+      && empty($_SESSION['shib_auth_account_linking'])) {
+    // This is a valid Shibboleth session. Assign our custom roles.
+    shib_auth_roles_example_assign_roles();
+  }
+}
+
+/**
+ * Assign user role based on two Shibboleth attributes.
+ *
+ * Add your attributes, and change the role id to match the one you need
+ */
+function shib_auth_roles_example_assign_roles() {
+  $role_id = 3;
+  $attribute_1 = "HTTP_OAKSTATUS";
+  $attribute_2 = "HTTP_EDUPERSONORGUNITDN";
+
+  if (isset($_SERVER[$attribute_1]) && isset($_SERVER[$attribute_2])) {
+    if (preg_match('/(staff)/', $_SERVER[$attribute_1])
+        && preg_match('/UnitCode=(itserv)/', $_SERVER[$attribute_2])) {
+
+      global $user;
+      $user->roles[$role_id] = shib_auth_get_rolename($role_id);
+
+      // Uncomment the following line if you want to make the roles permanent.
+      // shib_auth_save_roles();
+    }
+  }
+}

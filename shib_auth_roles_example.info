@@ -1,0 +1,5 @@
+name = Shibboleth authentication advanced roles logic example
+description = Advanced Shibboleth authentication roles manipulation
+core = 7.x
+
+dependencies[] = shib_auth
